@@ -14,6 +14,7 @@ from PyQt6.QtWidgets import (QPushButton, QMainWindow, QSlider, QLabel, QFileDia
 
 from src.global_constants import (APP_NAME, APP_TITLE, VERSION, CONFIG_FILENAME)
 from src.core.point_system import Point
+from src.core.moduls import ClusterModule
 from src.core.settings import SettingsDataObject
 
 
@@ -34,6 +35,8 @@ class MainForm(QMainWindow):
 
         self.settings = SettingsDataObject()
         self.settings.load_from_ini(CONFIG_FILENAME)
+
+        self.point_graph = ClusterModule(self)
 
         self.installEventFilter(self)
         self.init_ui()
@@ -77,6 +80,7 @@ class MainForm(QMainWindow):
         """
         self.settings.system_settings.form_width = self.width()
         self.settings.system_settings.form_height = self.height()
+        self.point_graph.resize(self.width(), self.height())
 
     def load_ann_models(self) -> None:
         pass

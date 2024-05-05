@@ -1,6 +1,7 @@
 import os
 
 DEBUG = True
+SHOW_TRACEBACK = True
 TRACE = False
 LOG_IN_FILE = False
 LOG_IN_SIGNAL = False
