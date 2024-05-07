@@ -82,6 +82,10 @@ class MainForm(QMainWindow):
         self.settings.system_settings.form_height = self.height()
         self.point_graph.resize(self.width(), self.height())
 
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key.Key_S.value:
+            self.point_graph.take_screenshot()
+
     def load_ann_models(self) -> None:
         pass
 

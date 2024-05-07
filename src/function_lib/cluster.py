@@ -44,6 +44,7 @@ def clusterization_threshold(input_array: np.ndarray,
     array_size: int = input_array.shape[0]
     cluster: np.ndarray = np.zeros((array_size), dtype=int)  # noqa
 
+    # Предобработка данных
     indexes: np.ndarray = np.arange(array_size)
     if data_method is ClusterizationDataMethod.SHUFFLE:
         np.random.seed(random_seed)
@@ -53,6 +54,7 @@ def clusterization_threshold(input_array: np.ndarray,
         indexes = indexes[::-1]
         input_array = input_array[indexes]
 
+    # region Кластеризация
     cluster[0] = 1
     for elem_index, elem_val in enumerate(input_array[1:]):
         elem_val: np.ndarray
@@ -66,6 +68,9 @@ def clusterization_threshold(input_array: np.ndarray,
                 continue
         else:
             cluster[elem_index + 1] = cluster.max() + 1
+    # endregion
+
+    # Постобработка данных (возвращение нормальных значений для массива)
     if data_method is ClusterizationDataMethod.SHUFFLE:
         reverse_indexes = [ind[1] for ind in sorted(dict(zip(indexes, np.arange(array_size))).items())]
         cluster = cluster[reverse_indexes]

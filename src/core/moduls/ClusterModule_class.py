@@ -2,18 +2,19 @@ import gc
 import math
 import random
 import re
+from datetime import datetime
 from typing import Optional, Union, List, TYPE_CHECKING
 
 import numpy as np
 
-from PyQt6 import QtCore
+from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import pyqtSlot, QEvent, Qt
-from PyQt6.QtGui import QPaintEvent, QPainter, QBrush, QColor, QMouseEvent, QFontMetrics, QResizeEvent, QFont
+from PyQt6.QtGui import QPaintEvent, QPainter, QBrush, QColor, QMouseEvent, QFontMetrics, QResizeEvent, QFont, QKeyEvent
 from PyQt6.QtWidgets import QWidget, QToolTip, QLabel, QVBoxLayout, QPushButton, QScrollBar, QSlider, QCheckBox, \
     QTextEdit, QTableView, QInputDialog, QComboBox, QSpinBox
 
 from src.core.graph_system.qt_widgets import PointGraph3D
-from src.core.log_system import print_e, print_traceback
+from src.core.log_system import print_e, print_traceback, print_d
 from src.function_lib.cluster import clusterization_threshold
 from src.core.graph_system import TableModelNumpy
 from src.enums import ClusterizationDataMethod
@@ -239,7 +240,8 @@ class ClusterModule(QWidget):
                 list(self.cluster_data_method_dict.values()).index(self.combobox_cluster_data_method.currentText())
             ]
 
-            clusters = clusterization_threshold(self.points, self.cluster_threshold,
+            clusters = clusterization_threshold(self.points,
+                                                self.cluster_threshold,
                                                 data_method=data_method,
                                                 random_seed=random_seed if random_seed != -1 else None)
             np.random.seed(None)
@@ -253,6 +255,8 @@ class ClusterModule(QWidget):
             model = TableModelNumpy(clusters.reshape((1, -1)))
             self.cluster_table.setModel(model)
             self.cluster_table.resizeColumnsToContents()
+
+            print_d(clusters)
 
     @pyqtSlot()
     def generate_points(self) -> None:
@@ -268,5 +272,13 @@ class ClusterModule(QWidget):
                 self.update_point_data()
         except Exception as e:
             print_e(e)
+
+    def take_screenshot(self) -> None:
+        screen = QtWidgets.QApplication.primaryScreen()
+        print_d(self.graph_system.mapToGlobal(self.pos()))
+        screenshot = screen.grabWindow(self.winId(), self.graph_system.x(), self.graph_system.y(),
+                                       self.graph_system.width(), self.graph_system.height())
+        screenshot.save(f'data/local/screen_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png', 'png')
+
 
 
