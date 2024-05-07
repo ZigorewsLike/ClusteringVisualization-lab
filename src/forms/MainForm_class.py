@@ -36,7 +36,7 @@ class MainForm(QMainWindow):
         self.settings = SettingsDataObject()
         self.settings.load_from_ini(CONFIG_FILENAME)
 
-        self.point_graph = ClusterModule(self)
+        self.point_graph = ClusterModule(self, self)
 
         self.installEventFilter(self)
         self.init_ui()
